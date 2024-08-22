@@ -1,0 +1,38 @@
+#Config file for ray traicing image rendering :
+
+$$$ image_size :
+40 40
+
+$$$ background_color (white or grey):
+grey
+
+$$$ light_position (coordonate x, y, z or default) :
+default
+
+$$$ light_intensity (low, medium, high):
+high
+
+$$$ light_color (white or yellow) :
+white
+
+$$$ camera_position (coordonates):
+(0,0,5)
+
+$$$ camera_look_at (coordonates of point the camera is looking at):
+(0,0,0)
+
+$$$ camera_up (orentiation of de camera):
+(0,1,0)
+
+$$$ camera_fov (champs de vision):
+45
+
+$$$ camera_aspect_ratio (Ratio d'aspect de l'image)
+1.0
+
+
+
+$$$ shapes (type, color, location) : 
+sphere/red/(1,1,1)
+$$$ end_shape
+

@@ -1,0 +1,50 @@
+{
+  // Utilisez IntelliSense pour en savoir plus sur les attributs possibles.
+  // Pointez pour afficher la description des attributs existants.
+  // Pour plus d'informations, visitez : https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug unit tests in library 'rt'",
+      "cargo": {
+        "args": ["test", "--no-run", "--lib", "--package=rt"],
+        "filter": {
+          "name": "rt",
+          "kind": "lib"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug executable 'rt'",
+      "cargo": {
+        "args": ["build", "--bin=rt", "--package=rt"],
+        "filter": {
+          "name": "rt",
+          "kind": "bin"
+        }
+      },
+      "args": ["configs/audit00.txt"],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "Debug unit tests in executable 'rt'",
+      "cargo": {
+        "args": ["test", "--no-run", "--bin=rt", "--package=rt"],
+        "filter": {
+          "name": "rt",
+          "kind": "bin"
+        }
+      },
+      "args": [],
+      "cwd": "${workspaceFolder}"
+    }
+  ]
+}

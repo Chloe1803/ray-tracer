@@ -21,6 +21,7 @@ fn main() {
     let config_file = &args[1];
 
     let scene_params = parse_config_file(&config_file);
-    println!("{:#?}", scene_params)
+    
+    scene_params.render();
 
 }

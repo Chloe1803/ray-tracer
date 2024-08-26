@@ -90,14 +90,7 @@ pub fn color(ray: &Ray, scene: &Scene_params) -> Color {
         .filter_map(|obj| obj.intersect(ray))
         .min_by(|i1, i2| i1.distance.partial_cmp(&i2.distance).unwrap())
     {
-        let mut final_color = compute_lighting(&intersection, &scene.light, ray) ; // Couleur ambiante
-
-        // Vérifiez si le point d'intersection est dans l'ombre
-        // if !is_in_shadow(&intersection.point, &scene.light, &scene.objects) {
-        //     // Si pas d'ombre, calculez la contribution de la lumière
-        //     let light_color = compute_lighting(&intersection, &scene.light, ray);
-        //     final_color = final_color + light_color;
-        // }
+        let mut final_color = compute_lighting(&intersection, &scene, ray); // Couleur avec ombres
 
         return final_color;
     }
@@ -106,19 +99,39 @@ pub fn color(ray: &Ray, scene: &Scene_params) -> Color {
     scene.background_color.clone()
 }
 
+fn compute_lighting(intersection: &Intersection, scene: &Scene_params, ray: &Ray) -> Color {
+    let mut final_color = Color::new(0.0, 0.0, 0.0);
 
-fn compute_lighting(intersection: &Intersection, light: &Light, ray: &Ray) -> Color {
-    // Vecteur de la lumière à l'intersection
-    let light_dir = (light.position - intersection.point).normalize();
+    for light in &scene.lights {
+        // Vecteur de la lumière à l'intersection
+        let light_dir = (light.position - intersection.point).normalize();
 
-    // Produit scalaire entre la normale et le vecteur lumière
-    let diffuse_intensity = light_dir.dot(intersection.normal).max(0.0);
+        // Rayon d'ombre
+        let shadow_ray = Ray {
+            origin: intersection.point + intersection.normal * 1e-6, // Petit décalage pour éviter l'auto-intersection
+            direction: light_dir,
+        };
 
-    // Calcul de la couleur finale
-    let diffuse_color = intersection.color * diffuse_intensity * light.intensity;
+        // Vérifier les intersections avec les objets de la scène
+        let in_shadow = scene.objects.iter()
+            .filter_map(|obj| obj.intersect(&shadow_ray))
+            .any(|shadow_intersection| shadow_intersection.distance < (light.position - intersection.point).length());
 
-    diffuse_color
+        if !in_shadow {
+            // Produit scalaire entre la normale et le vecteur lumière
+            let diffuse_intensity = light_dir.dot(intersection.normal).max(0.0);
+
+            // Calcul de la couleur finale
+            let diffuse_color = intersection.color * diffuse_intensity * light.intensity;
+            final_color = final_color + diffuse_color;
+        }
+    }
+
+    final_color
 }
+
+
+
 
 fn is_in_shadow(point: &Vec3, light: &Light, objects: &Vec<Object>) -> bool {
     let shadow_ray = Ray {

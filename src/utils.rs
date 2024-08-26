@@ -127,11 +127,11 @@ pub fn parse_config_file(file_path: &str) -> Scene_params {
         image_size,
         background_color,
         camera: Camera::new(camera_position, camera_look_at, camera_up, camera_fov, camera_aspect_ratio),
-        light: Light {
+        lights: vec![Light {
             position: light_position,
             intensity: light_intensity,
             color: light_color,
-        },
+        }],
         objects,
     }
 }

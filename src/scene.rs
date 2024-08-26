@@ -11,7 +11,7 @@ pub struct Scene_params {
     pub image_size: (u32, u32),
     pub background_color: Color,
     pub camera: Camera,
-    pub light: Light,
+    pub lights: Vec<Light>, 
     pub objects: Vec<Object>,
 }
 

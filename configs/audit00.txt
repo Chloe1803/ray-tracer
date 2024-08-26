@@ -16,7 +16,7 @@ $$$ light_color (white or yellow) :
 white
 
 $$$ camera_position (coordonates):
-(0,0,100)
+(10,10,100)
 
 $$$ camera_look_at (coordonates of point the camera is looking at):
 (10,0,0)
@@ -33,7 +33,7 @@ $$$ camera_aspect_ratio (Ratio d'aspect de l'image)
 
 
 $$$ shapes (type, color, location) : 
-sphere/red/(0,0,0)
-sphere/blue/(12, 12, 12)
+flateplane/cyan/(0,0,0)
+sphere/red/(0,10,5)
 $$$ end_shape
 

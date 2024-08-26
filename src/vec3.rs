@@ -1,4 +1,4 @@
-use std::ops::{Add, Sub, Mul};
+use std::ops::{Add, Sub, Mul, Div};
 
 //Module pour la gestion des vecteurs 3D
 
@@ -39,7 +39,29 @@ impl Vec3 {
         }
     }
 
-    // Implémenter d'autres opérations comme l'addition, soustraction, etc.
+    pub fn min(&self, other: &Vec3) -> Vec3 {
+        Vec3 {
+            x: self.x.min(other.x),
+            y: self.y.min(other.y),
+            z: self.z.min(other.z),
+        }
+    }
+
+    pub fn max(&self, other: &Vec3) -> Vec3 {
+        Vec3 {
+            x: self.x.max(other.x),
+            y: self.y.max(other.y),
+            z: self.z.max(other.z),
+        }
+    }
+
+    pub fn inverse(&self) -> Vec3 {
+        Vec3 {
+            x: 1.0 / self.x,
+            y: 1.0 / self.y,
+            z: 1.0 / self.z,
+        }
+    }
 }
 
 impl Add for Vec3 {
@@ -82,6 +104,31 @@ impl Mul<Vec3> for f64 {
         Vec3::new(self * vec.x, self * vec.y, self * vec.z)
     }
 }
+
+impl Div<f64> for Vec3 {
+    type Output = Vec3;
+
+    fn div(self, rhs: f64) -> Vec3 {
+        Vec3 {
+            x: self.x / rhs,
+            y: self.y / rhs,
+            z: self.z / rhs,
+        }
+    }
+}
+
+impl Div<Vec3> for Vec3 {
+    type Output = Vec3;
+
+    fn div(self, rhs: Vec3) -> Vec3 {
+        Vec3 {
+            x: self.x / rhs.x,
+            y: self.y / rhs.y,
+            z: self.z / rhs.z,
+        }
+    }
+}
+
 
 pub fn parse_vec3(value: &str) -> Vec3 {
     let cleaned_value = value.trim_matches(|p| p == '(' || p == ')');

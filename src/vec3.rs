@@ -62,6 +62,10 @@ impl Vec3 {
             z: 1.0 / self.z,
         }
     }
+
+    pub fn reflect(&self, normal: Vec3) -> Vec3 {
+        *self - 2.0 * self.dot(normal) * normal
+    }
 }
 
 impl Add for Vec3 {

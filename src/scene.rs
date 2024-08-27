@@ -7,7 +7,7 @@ use crate::utils::*;
 //Module pour la gestion de la scène (gestion des objets et des lumières)
 
 #[derive(Debug)]
-pub struct Scene_params {
+pub struct SceneParams {
     pub image_size: (u32, u32),
     pub background_color: Color,
     pub camera: Camera,
@@ -34,9 +34,9 @@ impl Light {
     }
 }
 
-impl Scene_params {
+impl SceneParams {
 
-    pub fn render(&self){
+    pub fn render(&self, destination: &str){
         let (width, height) = self.image_size;
         let mut image = vec![vec![get_color("black"); width as usize]; height as usize];
 
@@ -51,7 +51,7 @@ impl Scene_params {
         }
 
     // Sauvegarder l'image au format PPM
-    save_image("output.ppm", &image);
+    save_image(destination, &image);
     }
     
 }

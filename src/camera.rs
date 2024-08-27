@@ -23,7 +23,7 @@ impl Camera {
         let viewport_width = aspect_ratio * viewport_height;
 
         let w = (position - look_at).normalize();
-        let u = up.cross(w).normalize();
+        let u: Vec3 = up.cross(w).normalize();
         let v = w.cross(u);
 
         let lower_left_corner = position - (viewport_width / 2.0) * u - (viewport_height / 2.0) * v - w;

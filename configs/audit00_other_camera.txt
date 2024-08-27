@@ -16,7 +16,7 @@ $$$ light_color (white, yellow, etc) :
 black
 
 $$$ camera_position (coordonates (x, y, z), north, east, south, or west):
-north
+east
 
 $$$ camera_look_at (coordonate (x, y, z)):
 (0,0,0)

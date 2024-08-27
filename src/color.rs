@@ -1,7 +1,6 @@
 use crate::ray::*;
 use crate::scene::*;
 use crate::objects::*;
-use crate::vec3::*;
 use std::ops::{Mul, Add};
 
 #[derive(Debug, Copy, Clone)]
@@ -38,6 +37,7 @@ impl Color {
         let b = (self.b * 255.0).clamp(0.0, 255.0) as u8;
         (r, g, b)
     }
+
 }
 
 impl Mul<f64> for Color {
@@ -75,7 +75,7 @@ pub fn get_color(color_name: &str) -> Color {
         "cyan" => Color::new(0.0, 1.0, 1.0),
         "magenta" => Color::new(1.0, 0.0, 1.0),
         "gray" | "grey" => Color::new(0.5, 0.5, 0.5),
-        "orange" => Color::new(1.0, 0.65, 0.0),
+        "orange" => Color::new(1.0, 0.5, 0.0),
         "purple" => Color::new(0.5, 0.0, 0.5),
         "brown" => Color::new(0.6, 0.3, 0.0),
         _ => {
@@ -85,12 +85,12 @@ pub fn get_color(color_name: &str) -> Color {
     }
 }
 
-pub fn color(ray: &Ray, scene: &Scene_params) -> Color {
+pub fn color(ray: &Ray, scene: &SceneParams) -> Color {
     if let Some(intersection) = scene.objects.iter()
         .filter_map(|obj| obj.intersect(ray))
         .min_by(|i1, i2| i1.distance.partial_cmp(&i2.distance).unwrap())
     {
-        let mut final_color = compute_lighting(&intersection, &scene, ray); // Couleur avec ombres
+        let final_color = compute_lighting(&intersection, &scene, ray, 0); // Couleur avec ombres
 
         return final_color;
     }
@@ -99,8 +99,18 @@ pub fn color(ray: &Ray, scene: &Scene_params) -> Color {
     scene.background_color.clone()
 }
 
-fn compute_lighting(intersection: &Intersection, scene: &Scene_params, ray: &Ray) -> Color {
-    let mut final_color = Color::new(0.0, 0.0, 0.0);
+fn compute_lighting(intersection: &Intersection, scene: &SceneParams, ray: &Ray, depth: u32) -> Color {
+    let mut final_color = scene.lights[0].color.scale(0.2);
+
+    // Limiter la profondeur de récursion pour les réflexions
+    if depth >= 6 {
+        return final_color;  // Si la profondeur maximale est atteinte, retourner la couleur actuelle
+    }
+
+    // Ajout d'une composante de lumière ambiante
+    let ambient_intensity = 0.15;  
+    let ambient_color = intersection.color * ambient_intensity;
+    final_color = final_color + ambient_color;
 
     for light in &scene.lights {
         // Vecteur de la lumière à l'intersection
@@ -121,9 +131,25 @@ fn compute_lighting(intersection: &Intersection, scene: &Scene_params, ray: &Ray
             // Produit scalaire entre la normale et le vecteur lumière
             let diffuse_intensity = light_dir.dot(intersection.normal).max(0.0);
 
-            // Calcul de la couleur finale
+            // Calcul de la couleur diffuse
             let diffuse_color = intersection.color * diffuse_intensity * light.intensity;
             final_color = final_color + diffuse_color;
+
+            // Ajouter la composante spéculaire pour les reflets
+            let reflection_dir = ray.direction.reflect(intersection.normal).normalize();
+            let reflection_ray = Ray {
+                origin: intersection.point + intersection.normal * 1e-6,
+                direction: reflection_dir,
+            };
+
+            // Trouver l'objet le plus proche dans la direction de la réflexion
+            if let Some(reflection_intersection) = scene.objects.iter()
+                .filter_map(|obj| obj.intersect(&reflection_ray))
+                .min_by(|a, b| a.distance.partial_cmp(&b.distance).unwrap_or(std::cmp::Ordering::Equal)) 
+            {
+                let reflection_color = compute_lighting(&reflection_intersection, scene, &reflection_ray, depth + 1);
+                final_color = final_color + reflection_color * 0.5;  // Ajustez la force du reflet en fonction de votre besoin
+            }
         }
     }
 
@@ -131,16 +157,6 @@ fn compute_lighting(intersection: &Intersection, scene: &Scene_params, ray: &Ray
 }
 
 
-
-
-fn is_in_shadow(point: &Vec3, light: &Light, objects: &Vec<Object>) -> bool {
-    let shadow_ray = Ray {
-        origin: *point,
-        direction: (light.position - *point).normalize(),
-    };
-
-    objects.iter().any(|obj| obj.intersect(&shadow_ray).is_some())
-}
 
 
 

@@ -124,6 +124,8 @@ pub struct Cylinder {
     pub radius: f64,
     pub height: f64,
     pub color: Color,
+    pub top_disk: Disk,
+    pub bottom_disk: Disk,
 }
 
 impl Cylinder {
@@ -133,7 +135,11 @@ impl Cylinder {
         let height = 20.00;
         let color = get_color(&shape.color);
 
-        Cylinder { center, radius, height, color }
+        let top_center = center + Vec3::new(0.0, height, 0.0);
+        let top_disk = Disk::new(top_center, Vec3::new(0.0, 1.0, 0.0), radius, color);
+        let bottom_disk = Disk::new(center, Vec3::new(0.0, -1.0, 0.0), radius, color);
+
+        Cylinder { center, radius, height, color, top_disk, bottom_disk }
     }
 
     pub fn normal_at(&self, point: Vec3) -> Vec3 {
@@ -294,6 +300,7 @@ impl Renderable for FlatePlane {
 
 impl Renderable for Cylinder {
     fn intersect(&self, ray: &Ray) -> Option<Intersection> {
+        // Intersect with the cylindrical surface
         let oc = ray.origin - self.center;
 
         let a = ray.direction.x * ray.direction.x + ray.direction.z * ray.direction.z;
@@ -323,11 +330,53 @@ impl Renderable for Cylinder {
             }
         }
 
+        // Intersect with the top and bottom disks
+        let top_intersection = self.top_disk.intersect(ray);
+        let bottom_intersection = self.bottom_disk.intersect(ray);
+
+        top_intersection.or(bottom_intersection)
+    }
+
+    fn color(&self) -> Color {
+        self.color
+    }
+}
+
+#[derive(Debug)]
+pub struct Disk {
+    pub center: Vec3,
+    pub normal: Vec3,
+    pub radius: f64,
+    pub color: Color,
+}
+
+impl Disk {
+    pub fn new(center: Vec3, normal: Vec3, radius: f64, color: Color) -> Self {
+        Disk { center, normal, radius, color }
+    }
+
+    pub fn normal_at(&self, _point: Vec3) -> Vec3 {
+        self.normal
+    }
+}
+
+impl Renderable for Disk {
+    fn intersect(&self, ray: &Ray) -> Option<Intersection> {
+        let denom = self.normal.dot(ray.direction);
+        if denom.abs() > 1e-6 {
+            let t = (self.center - ray.origin).dot(self.normal) / denom;
+            if t > 0.0 {
+                let point = ray.origin + ray.direction * t;
+                if (point - self.center).length() <= self.radius {
+                    return Some(Intersection { point, normal: self.normal, distance: t, color: self.color });
+                }
+            }
+        }
+
         None
     }
 
     fn color(&self) -> Color {
         self.color
     }
-    
 }

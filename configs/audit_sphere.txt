@@ -34,10 +34,8 @@ $$$ camera_aspect_ratio (Ratio d'aspect de l'image)
 
 $$$ shapes (type, color, location) : 
 flateplane/grey/(0,0,0)
-sphere/black/(-25,15,-25)
-cylinder/red/(0,13,-40)
-cube/yellow/(25,10,-25)
-cube/purple/(-33,0,7)
-cylinder/cyan/(25,0,25)
+sphere/blue/(-25,5,-25)
+sphere/red/(0,10,-40)
+sphere/green/(25,20,-25)
 $$$ end_shape
 

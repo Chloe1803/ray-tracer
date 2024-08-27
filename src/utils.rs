@@ -3,6 +3,7 @@ use std::io::Write;
 use std::fs::File;
 use std::io::{self, BufRead};
 use std::path::Path;
+use std::f64::consts::PI;
 use crate::camera::Camera;
 use crate::color::*;
 use crate::vec3::*;
@@ -10,7 +11,7 @@ use crate::objects::*;
 use crate::scene::*;
 
 
-pub fn parse_config_file(file_path: &str) -> Scene_params {
+pub fn parse_config_file(file_path: &str) -> SceneParams {
     let path = Path::new(file_path);
     let file = File::open(&path).expect("Could not open file");
     let reader = io::BufReader::new(file);
@@ -24,7 +25,7 @@ pub fn parse_config_file(file_path: &str) -> Scene_params {
     let mut camera_fov = 0.0;
     let mut camera_aspect_ratio = 0.0;
     let mut light_position = Vec3 { x: 0.0, y: 0.0, z: 0.0 };
-    let mut light_intensity = 1.5;
+    let mut light_intensity = 1.0;
     let mut light_color = get_color("white");
     let mut objects = Vec::new();
     let mut reading_shapes = false;
@@ -70,18 +71,24 @@ pub fn parse_config_file(file_path: &str) -> Scene_params {
         if line.contains("$$$ light_position") {
             if let Some(Ok(next_line)) = lines.next(){
                 if next_line == "default" {
-                    light_position =  Vec3 { x: 25.0, y: 25.0, z: 25.0 };
+                    light_position =  Vec3 { x: 0.0, y: 50.0, z: 0.0 };
                 }else{
                     light_position = parse_vec3(&next_line)
                 }
             }
         }
 
-        // if line.contains("$$$ light_intensity") {
-        //     if let Some(Ok(next_line)) = lines.next(){
-        //         light_intensity = next_line;
-        //     }
-        // }
+         if line.contains("$$$ light_intensity") {
+            if let Some(Ok(next_line)) = lines.next(){
+                if next_line == "low" {
+                    light_intensity =  0.7;
+                }else if next_line == "medium" {
+                    light_intensity =  1.0;
+                }else if next_line == "high" {
+                    light_intensity =  1.3;
+                }
+            }
+         }
         
         if line.contains("$$$ light_color") {
             if let Some(Ok(next_line)) = lines.next(){
@@ -91,19 +98,37 @@ pub fn parse_config_file(file_path: &str) -> Scene_params {
 
         if line.contains("$$$ camera_position") {
             if let Some(Ok(next_line)) = lines.next(){
-                camera_position = parse_vec3(&next_line)
+                if next_line == "north" {
+                    camera_position = Vec3 {x:0.0, y:50.0, z:100.0};
+                }else if next_line == "west" {
+                    camera_position = Vec3 {x:100.0, y:50.0, z:0.0};
+                }else if next_line == "south" {
+                    camera_position = Vec3 {x:0.0, y:50.0, z:-100.0};
+                }else if next_line == "east" {
+                    camera_position = Vec3 {x:-100.0, y:50.0, z:0.0};
+                }else {
+                    camera_position = parse_vec3(&next_line)
+                }
             }
         }
 
         if line.contains("$$$ camera_look_at") {
             if let Some(Ok(next_line)) = lines.next(){
-                camera_look_at = parse_vec3(&next_line)
+                if next_line == "default" {
+                    camera_look_at = Vec3 {x:0.0, y:0.0, z:0.0};
+                }else {
+                    camera_look_at = parse_vec3(&next_line)
+                }
             }
         }
 
-        if line.contains("$$$ camera_up") {
+        if line.contains("$$$ camera_orientation") {
             if let Some(Ok(next_line)) = lines.next(){
-                camera_up = parse_vec3(&next_line)
+                let degrees = next_line.parse::<f64>().expect("Failed to parse camera_orientation");
+                let radians = degrees * PI / 180.0;
+                let y = radians.cos();
+                let x = radians.sin();
+                camera_up = Vec3 {x:x, y:y, z:0.0};
             }
         }
 
@@ -123,7 +148,7 @@ pub fn parse_config_file(file_path: &str) -> Scene_params {
 
     }
 
-    Scene_params {
+    SceneParams {
         image_size,
         background_color,
         camera: Camera::new(camera_position, camera_look_at, camera_up, camera_fov, camera_aspect_ratio),

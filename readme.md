@@ -1,6 +1,6 @@
 # Ray Tracer
 
-## Context
+## Contexte
 
 Ce projet a été développé dans le cadre de ma formation, en collaboration aevc Ludovic Untereiner.
 Le **ray tracing** est une technique de rendu utilisée en infographie pour générer des images en traçant le chemin des rayons de lumière à travers les pixels d'une image et en simulant les effets de leurs interactions avec les objets virtuels. Cette méthode permet de produire des images avec un haut degré de réalisme en prenant en compte des phénomènes tels que les réflexions, les réfractions, les ombres et les effets de lumière indirecte.

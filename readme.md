@@ -16,6 +16,8 @@ Le ray tracing est largement utilisé dans les applications où la qualité de l
 
 Étant donné que nous n'avons pas un niveau avancé en mathématiques, nous avons utilisé ChatGPT pour nous aider avec les fonctions de calcul des intersections.
 
+![ray-traicing output](output.png)
+
 ## Objectifs
 
 Dans ce projet, l'objectif est de mettre en œuvre la méthode de **ray tracing** pour rendre une image générée par ordinateur contenant plusieurs objets. Ce projet doit prendre en compte les aspects suivants :

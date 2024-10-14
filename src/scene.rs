@@ -50,8 +50,12 @@ impl SceneParams {
             }
         }
 
-    // Sauvegarder l'image au format PPM
-    save_image(destination, &image);
-    }
-    
+        if destination.ends_with(".png") {
+            // Sauvegarder l'image au format PNG
+            save_image_as_png(destination, &image);
+        } else {
+            // Sauvegarder l'image au format PPM
+            save_image(destination, &image);
+        }
+    }       
 }

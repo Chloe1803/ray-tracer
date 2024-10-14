@@ -1,5 +1,21 @@
 # Ray Tracer
 
+## Context
+
+Ce projet a été développé dans le cadre de ma formation, en collaboration aevc Ludovic Untereiner.
+Le **ray tracing** est une technique de rendu utilisée en infographie pour générer des images en traçant le chemin des rayons de lumière à travers les pixels d'une image et en simulant les effets de leurs interactions avec les objets virtuels. Cette méthode permet de produire des images avec un haut degré de réalisme en prenant en compte des phénomènes tels que les réflexions, les réfractions, les ombres et les effets de lumière indirecte.
+
+Le processus de ray tracing implique les étapes suivantes :
+
+1. **Lancement de rayons** : Des rayons sont lancés depuis la caméra à travers chaque pixel de l'image.
+2. **Intersection** : Pour chaque rayon, on détermine s'il intersecte un objet dans la scène.
+3. **Calcul de la couleur** : Si une intersection est trouvée, la couleur du pixel est calculée en fonction des propriétés de l'objet, de la lumière et des matériaux.
+4. **Effets de lumière** : Les effets de lumière tels que les ombres, les réflexions et les réfractions sont simulés en lançant des rayons supplémentaires.
+
+Le ray tracing est largement utilisé dans les applications où la qualité de l'image est primordiale, comme dans les films d'animation, les effets spéciaux et les visualisations architecturales.
+
+Étant donné que nous n'avons pas un niveau avancé en mathématiques, nous avons utilisé ChatGPT pour nous aider avec les fonctions de calcul des intersections.
+
 ## Objectifs
 
 Dans ce projet, l'objectif est de mettre en œuvre la méthode de **ray tracing** pour rendre une image générée par ordinateur contenant plusieurs objets. Ce projet doit prendre en compte les aspects suivants :
@@ -8,7 +24,6 @@ Dans ce projet, l'objectif est de mettre en œuvre la méthode de **ray tracing*
 - Capacité à changer la position d'un objet avant la création de l'image (par exemple, rendre une sphère avec son centre au point (1,1,1)).
 - Possibilité de visualiser la même scène sous différents angles en déplaçant la caméra/point de vue.
 - Gestion simple de la lumière, incluant différentes intensités de luminosité et la gestion des ombres.
-
 
 ## Utilisation
 
@@ -55,7 +70,7 @@ $$$ camera_fov (field of view):
 $$$ camera_aspect_ratio (image aspect ratio):
 1.0
 
-$$$ shapes (type, color, location) : 
+$$$ shapes (type, color, location) :
 flateplane/grey/(0,0,0)
 sphere/grey/(-25,15,-25)
 sphere/purple/(0,13,-40)
@@ -66,6 +81,7 @@ $$$ end_shape
 ```
 
 ### Fonctionnalités
+
 **Création d'objets**
 
 Vous pouvez créer différents objets en utilisant la section $$$ shapes dans le fichier de configuration. Chaque objet est défini par son type, sa couleur et sa position. Voici quelques exemples :

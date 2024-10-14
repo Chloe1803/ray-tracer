@@ -11,6 +11,7 @@ use crate::objects::*;
 use crate::scene::*;
 
 
+
 pub fn parse_config_file(file_path: &str) -> SceneParams {
     let path = Path::new(file_path);
     let file = File::open(&path).expect("Could not open file");
@@ -177,6 +178,24 @@ pub fn save_image(filename: &str, image: &[Vec<Color>]) {
             writeln!(file, "{} {} {}", r, g, b).expect("Unable to write pixel data");
         }
     }
+}
+
+pub fn save_image_as_png(filename: &str, image: &[Vec<Color>]) {
+    let width = image[0].len();
+    let height = image.len();
+    let mut imgbuf = image::ImageBuffer::new(width as u32, height as u32);
+
+    for (x, y, pixel) in imgbuf.enumerate_pixels_mut() {
+        // Inverser l'ordre des lignes
+        let color = image[height - 1 - y as usize][x as usize];
+        *pixel = image::Rgb([
+            (color.r * 255.0) as u8,
+            (color.g * 255.0) as u8,
+            (color.b * 255.0) as u8,
+        ]);
+    }
+
+    imgbuf.save(filename).expect("Unable to save image");
 }
 
 

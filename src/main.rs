@@ -6,7 +6,7 @@ fn main() {
     let args: Vec<String> = env::args().collect();
 
     if args.len() != 3 {
-        eprintln!("Usage: cargo run configs/audit00.txt output.ppm");
+        eprintln!("Usage: cargo run configs/audit00.txt output.ppm OR cargo run configs/audit00.txt output.png");
         process::exit(1);
     }
 
